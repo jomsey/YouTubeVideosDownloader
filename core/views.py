@@ -6,7 +6,7 @@ from django.views import View
 from django.contrib import messages
 from core.engine import YoutubeVideo
 from core.forms import UserInputForm
-import re
+import re,math
 from pytube import YouTube,Search
 
 
@@ -16,6 +16,12 @@ class IndexView(View):
         form=UserInputForm()
         return render(request,"core/index.html",context={"form":form})
     
+    def video_time_formatted(self,video_length:int):
+        hr = "" if video_length//3600 == 0 else str(video_length//3600)+":" 
+        min_ = math.floor((video_length%3600)/60)
+        sec=video_length%60
+        formatted_time = f"{hr}{min_}:{sec}"
+        return formatted_time
     
     def post(self,request):
         form=UserInputForm(request.POST)
@@ -32,7 +38,7 @@ class IndexView(View):
                     video  = yt.streams.get_highest_resolution()
                     info_dict={"title":video.title,
                                 "size":video.filesize,
-                                "duration":video.length,
+                                "duration":self.video_time_formatted(video.length),
                                 "description":video.description,
                                 "thumbnail":video.thumbnail_url,
                                 "id":video.video_id,
@@ -44,7 +50,7 @@ class IndexView(View):
                     search =Search(query)
                     
                     results = list({ "title":result.title,
-                                     "duration":result.length,
+                                     "duration":self.video_time_formatted(video.length),
                                      "url":result.watch_url,
                                      "thumbnail":result.thumbnail_url,
                                      "publish_date":result.publish_date,
