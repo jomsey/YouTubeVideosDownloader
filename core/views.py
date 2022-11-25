@@ -50,7 +50,7 @@ class IndexView(View):
                     search =Search(query)
                     
                     results = list({ "title":result.title,
-                                     "duration":self.video_time_formatted(video.length),
+                                     "duration":self.video_time_formatted(result.length),
                                      "url":result.watch_url,
                                      "thumbnail":result.thumbnail_url,
                                      "publish_date":result.publish_date,
