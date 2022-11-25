@@ -1,15 +1,13 @@
 from pytube import YouTube,Search
 import os
 import math
-import asyncio
 
-
-      
+     
 class YoutubeVideo:
     def __init__(self,url):
         self.url = url
         
-    async def get_video(self):
+    def get_video(self):
         """
         Gets video with the highest resolution
         Returns:
@@ -31,17 +29,18 @@ class YoutubeVideo:
      
         
     def video_info(self):
-    
-        video = asyncio.run(self.get_video())
+        video =self.get_video()
         video_size = math.floor(video.filesize/1049600)
         title= video.title
         description = YouTube(self.url).description
+        video_id  = self.url.split('/')[-1]
         
         info_dict={"title":title,
                    "size":video_size,
                    "duration":self._get_video_duration(),
                    "description":description,
                    "thumbnail":YouTube(self.url).thumbnail_url,
+                   "id":video_id,
                    }
         
         return  info_dict
@@ -65,7 +64,7 @@ class YoutubeVideo:
         self.rename_to_mp3(audio)
     
     @classmethod   
-    async def search_video(cls,query):
+    def search_video(cls,query):
         """
         search youtube video and return search video url for the selected
         """

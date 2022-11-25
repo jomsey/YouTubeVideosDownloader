@@ -1,5 +1,5 @@
 
-Django==4.1.1
+Django
 pytube==12.1.0
 pytz==2022.2.1
 gunicorn

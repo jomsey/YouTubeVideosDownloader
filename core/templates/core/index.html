@@ -1,126 +1,114 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{%static "styles/index.css" %}"/>
+    <link rel="stylesheet" href="{%static 'styles/index.css'%}"/>
 
     <title>Let's Download</title>
-  </head>
+</head>
 
-  <body>
+<body>
     <div class="top p-2">
-      <img src="{%static 'images/logo.png'%}" alt="">
-      <div class="social-icons  p-2">
-        <a href="https://web.facebook.com/muwanguzi.joseph.12" target="blank" class="text-secondary">  <i class="bi bi-facebook"></i></a>
-       <a href="https://github.com/jomsey" target="blank"  class="text-secondary"> <i class="bi bi-github" ></i></a>
-      </div>
+        <img src="{%static 'images/logo.png'%}" alt="">
+        <div class="social-icons  p-2">
+            <a href="https://web.facebook.com/muwanguzi.joseph.12" target="blank" class="text-secondary"> <i class="bi bi-facebook"></i></a>
+            <a href="https://github.com/jomsey" target="blank" class="text-secondary"> <i class="bi bi-github"></i></a>
+        </div>
     </div>
     <div class=" pb-5 ">
-     <div class="header p-4  bg-dark">
-      <h1 class="text-center mt-4 text-secondry">Downlod Youtube Videos</h1>
-      <p class="text-center text-light mt-5 mb-5 ">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatum sit
-        asperiores iusto saepe ex, similique quod mollitia obcaecati cupiditate
-        dolor eos voluptate aliquam labore incidunt veniam animi ipsam earum
-        eius.
-      </p>
-      <form method="post" novalidate class="mb-5">
-        {% csrf_token %}
-        <div class="group">
-          {{form.query}}
-          <button type="submit" class="text-light">SUBMIT</button>
+        <div class="header p-4  bg-dark">
+            <h1 class="text-center mt-4 text-secondry">Downlod Youtube Videos</h1>
+            <p class="text-center text-light mt-5 mb-5 ">
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatum sit asperiores iusto saepe ex, similique quod mollitia obcaecati cupiditate dolor eos voluptate aliquam labore incidunt veniam animi ipsam earum eius.
+            </p>
+            <form method="post" novalidate class="mb-5">
+                {% csrf_token %}
+                <div class="group">
+                    {{form.query}}
+                    <button type="submit" class="text-light">SUBMIT</button>
+                </div>
+                {% if messages %} {% for message in messages %}
+                <small>{{messages}}</small> {% endfor %}{% endif %}
+            </form>
         </div>
-        {% if messages %} {% for message in messages %}
-        <small>{{messages}}</small>
-        {% endfor %}{% endif %}
-      </form>
-     </div>
-      <div class="container">
-        {% if info %}
-      <div class="card mt-5 video-info">
-        <div class="row g-0">
-          <div class="col-md-4">
-            <img
-              src="{{info.thumbnail}}"
-              class="img-fluid rounded-start"
-              alt="..."
-            />
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-title mb-2 ">{{info.title}}</h5>
-              <p class="card-text text-dark">{{info.description | truncatewords:30}}</p>
-                <small class="text-muted"><strong>DURATION: </strong> {{info.duration}}</small>
-              <br>
-                <small class="text-muted"><strong>VIDEO SIZE: </strong> {{info.size}}MB</small>
-              
-              </div>
-             
-          </div>
-        </div>
-      </div>
-      {% endif %} {%if videos%}
-      <p class="p-query mt-5 ">Search results for "{{query}}"</p>
-      <div class="videos-list p-2">
-       
-        {% for video in videos %}
-          <div class="card vid-card" style="width: 100%">
-            <img src="{{video.thumbnail}}" class="card-img-top" alt="..." />
-            <small class="time-stamp text-light ml-2">{{video.duration}}</small>
-            <div class="card-body">
-              <h5 class="card-title">{{video.title | truncatewords:8}}</h5>
-              <small class="text-secondary">{{video.publish_date | timesince}} ago</small>
+        <div class="container">
+            {% if info %}
+            <div class="card mt-5 video-info">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{info.thumbnail}}" class="img-fluid rounded-start" alt="..." />
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title mb-2 ">{{info.title}}</h5>
+                            <p class="card-text text-dark">{{info.description | truncatewords:30}}</p>
+                            <small class="text-muted"><strong>DURATION: </strong> {{info.duration}}</small>
+                            <br>
+                            <small class="text-muted"><strong>VIDEO SIZE: </strong> {{info.size}}MB</small>
+                            <a href="{%url 'download' info.id%}"> <button>Download</button></a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-          </div>
-        
-         {% endfor %} 
-        
+            {% endif %} {%if videos%}
+            <p class="p-query mt-5 ">Search results for "{{query}}"</p>
+            <div class="videos-list p-2">
+
+                {% for video in videos %}
+                <div class="card vid-card" style="width: 100%">
+                    <img src="{{video.thumbnail}}" class="card-img-top" alt="..." />
+                    <small class="time-stamp text-light ml-2">{{video.duration}}</small>
+                    <div class="card-body">
+                        <h5 class="card-title">{{video.title | truncatewords:8}}</h5>
+                        <small class="text-secondary">{{video.publish_date | timesince}} ago</small>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
         </div>
-      </div>
-     {% endif %}
-      </div>
+        {% endif %}
+    </div>
     </div>
     <h2 class="mb-5 text-center">Steps To Download a Video</h2>
     <div class="guide container mb-5">
-      <div class="card p-4" >
-        <span>1</span>
-        <div class="card-body">
-          <h6 class="card-subtitle mb-4 mt-2 text-muted">Enter Video URL or Name</h6>
-          <p class="card-text">Copy and Paste YouTube URL into the search box or search any YouTube video, then click <strong>"SUBMIT"</strong> button.</p>
+        <div class="card p-4">
+            <span>1</span>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-4 mt-2 text-muted">Enter Video URL or Name</h6>
+                <p class="card-text">Copy and Paste YouTube URL into the search box or search any YouTube video, then click <strong>"SUBMIT"</strong> button.</p>
+            </div>
         </div>
-      </div>
 
-      <div class="card p-4" >
-        <span>2</span>
-        
-        <div class="card-body">
-          <h6 class="card-subtitle mb-4  mt-2 text-muted">Card subtitle</h6>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <div class="card p-4">
+            <span>2</span>
+
+            <div class="card-body">
+                <h6 class="card-subtitle mb-4  mt-2 text-muted">Card subtitle</h6>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
         </div>
-      </div>
-      <div class="card p-4" >
-        <span>3</span>
-        <div class="card-body">
-          <h6 class="card-subtitle mb-4 mt-2 text-muted">Save Video</h6>
-          <p class="card-text">Press "<strong>DOWNLOAD</strong>" to save the your video fjjjjjfjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj</p>
+        <div class="card p-4">
+            <span>3</span>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-4 mt-2 text-muted">Save Video</h6>
+                <p class="card-text">Press "<strong>DOWNLOAD</strong>" to save the your video fjjjjjfjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj</p>
+            </div>
         </div>
-      </div>
-      
+
     </div>
 
     <footer class="p-4 bg-dark container-fluid">
-     <small class="text-center text-light" style="width: 100%;display:block;">&copy Muwanguzi Joseph 2022</small>
+        <small class="text-center text-light" style="width: 100%;display:block;">&copy Muwanguzi Joseph 2022</small>
     </footer>
-    
-  </body>
+
+</body>

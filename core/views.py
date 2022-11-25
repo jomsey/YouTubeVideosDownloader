@@ -1,5 +1,5 @@
 
-import asyncio
+
 from urllib.error import URLError
 from django.shortcuts import render
 from django.views import View
@@ -7,6 +7,8 @@ from django.contrib import messages
 from core.engine import YoutubeVideo
 from core.forms import UserInputForm
 import re
+from pytube import YouTube,Search
+
 
 
 class IndexView(View):
@@ -14,7 +16,7 @@ class IndexView(View):
         form=UserInputForm()
         return render(request,"core/index.html",context={"form":form})
     
- 
+    
     def post(self,request):
         form=UserInputForm(request.POST)
         context = {"form":form}
@@ -26,23 +28,42 @@ class IndexView(View):
                 
                 #check either url or search term submitted
                 if re.match(URL_PATTERN,query):
-                    yt = YoutubeVideo(query)
-                    context.update({"info":yt.video_info()})
+                    yt = YouTube(query)
+                    video  = yt.streams.get_highest_resolution()
+                    info_dict={"title":video.title,
+                                "size":video.filesize,
+                                "duration":video.length,
+                                "description":video.description,
+                                "thumbnail":video.thumbnail_url,
+                                "id":video.video_id,
+                   }
+                    
+                    context.update({"info":info_dict})
                 
                 else:
-                    results = asyncio.run(YoutubeVideo.search_video(query))
+                    search =Search(query)
+                    
+                    results = list({ "title":result.title,
+                                     "duration":result.length,
+                                     "url":result.watch_url,
+                                     "thumbnail":result.thumbnail_url,
+                                     "publish_date":result.publish_date,
+                                    "description":result.description} for result in search.results
+                             )
+                    
                     context.update({"videos":results,"query":query})
+                  
                 return render(request,"core/index.html",context=context)
         except(URLError):
             messages.info(request,"Action Not Successful. Try again later")
           
         
-              
         return render(request,"core/index.html",context=context)
         
 class DownloadVideoView(View):
-    def get(self,request,video_url):
-        yt = YoutubeVideo(video_url)
+    def get(self,request,video_id):
+        video_url = f"http://youtu.be/{video_id}"
+        yt = YouTube(video_url)
         yt.download_video()
         messages.success(request,"Download complete")
         return render(request,"core/index.html")
