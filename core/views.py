@@ -4,9 +4,8 @@ from urllib.error import URLError
 from django.shortcuts import render
 from django.views import View
 from django.contrib import messages
-from core.engine import YoutubeVideo
 from core.forms import UserInputForm
-import re,math
+import re,math,os
 from pytube import YouTube,Search
 
 
@@ -71,8 +70,8 @@ class DownloadVideoView(View):
     def get(self,request,video_id):
         video_url = f"http://youtu.be/{video_id}"
         yt = YouTube(video_url)
-        video = yt.streams.get_highest_resolution()
-        video.download()
+        video = yt.streams.first()
+        video.download(os.path.expanduser("~/Downloads"))
         messages.success(request,"Download complete")
         return render(request,"core/index.html")
     
