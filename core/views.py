@@ -1,13 +1,12 @@
-
-
 from urllib.error import URLError
 from django.shortcuts import render
 from django.views import View
 from django.contrib import messages
 from core.forms import UserInputForm
-import re,math,os
 from pytube import YouTube,Search
-
+from django.http import FileResponse
+from io import BytesIO
+import re,math,os
 
 
 class IndexView(View):
@@ -70,10 +69,17 @@ class DownloadVideoView(View):
     def get(self,request,video_id):
         video_url = f"http://youtu.be/{video_id}"
         yt = YouTube(video_url)
-        video = yt.streams.first()
-        video.download(os.path.expanduser("~/Downloads"))
+        stream = yt.streams.get_highest_resolution()
+        
+        _data = stream.download()
+        path = os.path.normpath(_data)
+        
+        with open (path,"rb") as video_file:
+            data = video_file.read()
+            
+        os.remove(_data)
         messages.success(request,"Download complete")
-        return render(request,"core/index.html")
+        return  FileResponse(BytesIO(data,file_name=f'{yt.title}.mp4',as_attachment=True,content_type="application/video/mp4"))
     
 
 class VideoDetailView(View):
