@@ -65,7 +65,8 @@ class DownloadVideoView(View):
     def get(self,request,video_id):
         video_url = f"http://youtu.be/{video_id}"
         yt = YouTube(video_url)
-        yt.download_video()
+        video = yt.streams.get_highest_resolution()
+        video.download()
         messages.success(request,"Download complete")
         return render(request,"core/index.html")
     
