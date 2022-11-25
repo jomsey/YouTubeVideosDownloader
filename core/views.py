@@ -48,7 +48,8 @@ class IndexView(View):
                                      "url":result.watch_url,
                                      "thumbnail":result.thumbnail_url,
                                      "publish_date":result.publish_date,
-                                    "description":result.description} for result in search.results
+                                    "description":result.description,
+                                     "id":result.video_id,} for result in search.results
                              )
                     
                     context.update({"videos":results,"query":query})

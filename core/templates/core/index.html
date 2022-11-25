@@ -70,6 +70,7 @@
                         <h5 class="card-title">{{video.title | truncatewords:8}}</h5>
                         <small class="text-secondary">{{video.publish_date | timesince}} ago</small>
                     </div>
+                    <a href="{%url 'download' video.id%}"> <button>Download</button></a>
                 </div>
 
                 {% endfor %}
